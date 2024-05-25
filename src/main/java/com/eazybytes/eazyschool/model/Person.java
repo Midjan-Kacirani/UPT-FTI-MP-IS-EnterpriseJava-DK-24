@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -61,6 +62,8 @@ public class Person extends BaseEntity{
     @JsonIgnore
     private String pwd;
 
+    private String photoData;
+
     @NotBlank(message="Confirm Password must not be blank")
     @Size(min=5, message="Confirm Password must be at least 5 characters long")
     @Transient
@@ -86,4 +89,11 @@ public class Person extends BaseEntity{
             inverseJoinColumns = {
                     @JoinColumn(name = "course_id", referencedColumnName = "courseId")})
     private Set<Courses> courses = new HashSet<>();
+
+    @Transient
+    public String getPhotosImagePath(){
+        if(photoData == null || personId <0)
+            return null;
+        return "assets/ProfileImages/"+personId+"/"+photoData;
+    }
 }
