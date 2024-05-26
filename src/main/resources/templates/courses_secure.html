@@ -55,7 +55,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form th:action="@{/admin/addNewCourse}" method="post" class="signin-form" th:object="${course}">
+                    <form th:action="@{/admin/addNewCourse}" method="post" class="signin-form" th:object="${course}" enctype="multipart/form-data">
                         <div class="modal-body">
                             <div class="input-grids">
                                 <label class="control-label" for="courseName">Course Name</label>
@@ -64,6 +64,30 @@
                                 <label class="control-label" for="fees">Fees</label>
                                 <input type="text" class="form-control" name="fees" id="fees" th:field="*{fees}"
                                        required placeholder="Enter fees">
+                                <div>
+                                    <label for="shortDescription">Short Description:</label>
+                                    <textarea id="shortDescription" name="shortDescription" required maxlength="200"></textarea>
+                                </div>
+                                <div>
+                                    <label for="longDescription">Fully detailed description:</label>
+                                    <textarea id="longDescription" name="longDescription" required maxlength="600"></textarea>
+                                </div>
+                                <div>
+                                    <label for="category">Category:</label>
+                                    <select id="category" name="category" required>
+                                        <option value="Education">Education</option>
+                                        <option value="Meditation">Meditation</option>
+                                        <option value="Games">Games</option>
+                                        <option value="Development">Development</option>
+                                        <option value="Audio & Music">Audio & Music</option>
+                                        <option value="Art & Design">Art & Design</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="image">Course Image:</label>
+                                    <input type="file" id="image" name="courseImage" accept="image/*" required>
+                                </div>
+
                             </div>
                         </div>
                         <div class="modal-footer border-top-0 d-flex justify-content-center">
