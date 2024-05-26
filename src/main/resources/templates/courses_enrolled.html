@@ -39,7 +39,7 @@
 
         <div class="row mb-4">
             <div class="overview-wrap">
-                <h3 class="heading-21921" th:text="${person.name} + ' Enrolled Courses'"></h3>
+                <h3 class="heading-21921" th:text="${person.getName()} + ' Enrolled Courses'"></h3>
             </div>
         </div>
         <table class="table table-striped table-hover">
@@ -51,10 +51,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="course: ${person.courses}">
-                <td th:text="${course.courseId}"></td>
-                <td th:text="${course.name}"></td>
-                <td th:text="${course.fees}"></td>
+            <tr th:each="course: ${person.getCourses()}">
+                <td th:text="${course.getCourseId()}"></td>
+                <td th:text="${course.getName()}"></td>
+                <td th:text="${course.getFees()}"></td>
             </tr>
             </tbody>
         </table>
