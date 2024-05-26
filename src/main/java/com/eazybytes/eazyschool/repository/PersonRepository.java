@@ -19,4 +19,9 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     @Query("SELECT p FROM Person p WHERE p.roles.roleName = :role")
     Set<Person> findByRoleName(@Param("role") String role);
 
+    @Query("SELECT CASE WHEN COUNT(pc) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM Person p JOIN p.courses pc " +
+            "WHERE p.personId = :personId AND pc.courseId = :courseId")
+    boolean existsCourseForPerson(@Param("personId") int personId, @Param("courseId") int courseId);
+
 }

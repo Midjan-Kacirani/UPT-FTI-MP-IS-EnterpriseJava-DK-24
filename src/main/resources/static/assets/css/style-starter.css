@@ -19868,7 +19868,7 @@ ul.rating-list li a.review-color {
   padding: 4px 10px;
   color: #FFFFFF !important;
   text-transform: capitalize;
-  display: inline-block;
+
   margin-right: 5px;
 }
 
@@ -21685,4 +21685,10 @@ th > a {
 th > a:hover {
   color: var(--primary-color);
   text-decoration: underline;
+}
+
+
+.course-item{
+margin:20px
+width:300px!important;
 }

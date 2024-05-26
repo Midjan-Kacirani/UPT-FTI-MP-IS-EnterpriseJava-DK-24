@@ -140,7 +140,6 @@ public class AdminController {
         }
 
         Courses courses = coursesRepository.save(course);
-
         String uploadDir = "src/main/resources/static/assets/CourseImages/" + courses.getCourseId();
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         modelAndView.setViewName("redirect:/admin/displayCourses");

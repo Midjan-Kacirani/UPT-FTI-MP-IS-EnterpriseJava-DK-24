@@ -22,6 +22,8 @@ public class Courses extends BaseEntity{
 
     private String fees;
 
+    private String Category;
+
     private String longDescription;
 
     private String shortDescription;
@@ -35,4 +37,11 @@ public class Courses extends BaseEntity{
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CourseMaterials> courseMaterials = new HashSet<>();
+    @Transient
+    public String getPhotosImagePath(){
+        if(coursePicture == null || courseId <0)
+            return null;
+        return "assets/CourseImages/"+courseId+"/"+coursePicture;
+    }
+
 }
