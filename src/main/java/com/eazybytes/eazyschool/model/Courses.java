@@ -33,5 +33,6 @@ public class Courses extends BaseEntity{
     @ManyToMany(mappedBy = "courses", fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     private Set<Person> persons = new HashSet<>();
 
-
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<CourseMaterials> courseMaterials = new HashSet<>();
 }
