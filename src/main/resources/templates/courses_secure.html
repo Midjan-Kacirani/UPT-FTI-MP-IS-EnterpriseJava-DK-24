@@ -62,6 +62,14 @@
                                 <input type="text" class="form-control" name="courseName" id="courseName"
                                        th:field="*{name}" required placeholder="Enter Course Name">
                                 <label class="control-label" for="fees">Fees</label>
+                                <div>
+                                    <label for="lecturer">Select Lecturer:</label>
+                                    <select id="lecturer" name="lecturer" required>
+                                        <option value="">Select Lecturer</option>
+                                        <!-- Iterate over lecturer persons and populate the dropdown -->
+                                        <option th:each="person : ${lecturers}" th:value="${person.personId}" th:text="${person.name}"></option>
+                                    </select>
+                                </div>
                                 <input type="text" class="form-control" name="fees" id="fees" th:field="*{fees}"
                                        required placeholder="Enter fees">
                                 <div>

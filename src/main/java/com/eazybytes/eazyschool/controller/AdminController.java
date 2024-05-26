@@ -1,10 +1,13 @@
 package com.eazybytes.eazyschool.controller;
 
 import com.eazybytes.eazyschool.Utilities.FileUploadUtil;
-import com.eazybytes.eazyschool.model.*;
+import com.eazybytes.eazyschool.model.Courses;
+import com.eazybytes.eazyschool.model.EazyClass;
+import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.repository.CoursesRepository;
 import com.eazybytes.eazyschool.repository.EazyClassRepository;
 import com.eazybytes.eazyschool.repository.PersonRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -15,11 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -116,16 +119,25 @@ public class AdminController {
         ModelAndView modelAndView = new ModelAndView("courses_secure.html");
         modelAndView.addObject("courses", courses);
         modelAndView.addObject("course", new Courses());
+        modelAndView.addObject("lecturers", personRepository.findByRoleName("LECTURER"));
         return modelAndView;
     }
 
     @PostMapping("/addNewCourse")
     public ModelAndView addNewCourse(Model model, @ModelAttribute("course") Courses course,
-                                     @RequestParam("courseImage") MultipartFile multipartFile) throws IOException {
+                                     @RequestParam("courseImage") MultipartFile multipartFile,
+                                     @RequestParam("lecturer") Integer lecturerId) throws IOException {
         ModelAndView modelAndView = new ModelAndView();
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         course.setCoursePicture(fileName);
+
+        // Gjen cil profesor eshte dhe e run lidhjen person_course
+        if (lecturerId != null) {
+            Optional<Person> lecturer = personRepository.findById(lecturerId);
+            lecturer.get().getCourses().add(course);
+            course.getPersons().add(lecturer.get());
+        }
 
         Courses courses = coursesRepository.save(course);
 
