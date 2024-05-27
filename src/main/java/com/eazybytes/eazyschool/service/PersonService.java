@@ -7,8 +7,11 @@ import com.eazybytes.eazyschool.repository.PersonRepository;
 import com.eazybytes.eazyschool.repository.RolesRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class PersonService {
@@ -33,6 +36,10 @@ public class PersonService {
             isSaved = true;
         }
         return isSaved;
+    }
+
+    public Set<Person> findByRoleName(String role){
+        return personRepository.findByRoleName(role);
     }
 
     @Transactional

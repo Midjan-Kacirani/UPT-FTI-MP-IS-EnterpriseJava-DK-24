@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /*
 @Repository stereotype annotation is used to add a bean of this class
@@ -23,8 +24,20 @@ public interface ContactRepository extends JpaRepository<Contact, Integer> {
     List<Contact> findByStatus(String status);
 
     @Query("SELECT c FROM Contact c WHERE c.status = :status")
-    //@Query(value = "SELECT * FROM contact_msg c WHERE c.status = :status",nativeQuery = true)
+        //@Query(value = "SELECT * FROM contact_msg c WHERE c.status = :status",nativeQuery = true)
     Page<Contact> findByStatusWithQuery(@Param("status") String status, Pageable pageable);
+
+
+    @Query(value = "SELECT * FROM contact_msg c WHERE c.subject = 'ENROLLMENT' OR c.subject = 'DELETION'", nativeQuery = true)
+    Page<Contact> findStudentsMessageSpecificSubject(Pageable pageable);
+
+    @Query(value = "SELECT * FROM contact_msg c WHERE c.subject = :subject AND c.email = :email", nativeQuery = true)
+    Optional<Contact> findSpecificStudentMessageSpecificSubject(@Param("subject") String subject, @Param("email") String email);
+
+    @Modifying
+    @Query(value = "DELETE FROM contact_msg WHERE subject = :subject AND email = :email", nativeQuery = true)
+    void deleteFromContactMessagesSubjectEmailSpecified(@Param("subject") String subject, @Param("email") String email);
+
 
     @Transactional
     @Modifying

@@ -46,7 +46,7 @@
                 <p th:text="${course.getShortDescription()}">Course Description</p>
                 <p th:text="${course.getLongDescription()}">Fully Detailed Description</p>
                 <input type="hidden" th:name="courseId" th:value="${course.getCourseId()}" />
-                <button type="submit" class="btn btn-danger mt-2">Unregister</button>
+                <button type="submit" class="btn btn-danger mt-2 " th:disabled="${disabled == true}">Unregister</button>
             </div>
 
                 </form>
