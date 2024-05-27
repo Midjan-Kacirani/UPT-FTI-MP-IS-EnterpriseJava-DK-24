@@ -1,5 +1,7 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.config.EazySchoolProps;
+import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.model.Courses;
 import com.eazybytes.eazyschool.model.Person;
@@ -58,11 +60,22 @@ public class CourseController {
 
         modelAndView.addObject("person", person);
         modelAndView.addObject("course", courses);
+        modelAndView.addObject("status",  EazySchoolConstants.OPEN);
+
+        //Shikoj nqs e ka bere me perpara ose jo nje request.
+        //Nqs po, atehere butoni do te jete disabled
+        //Nqs jo, butoni do te jete enabled
         if (exists) {
             modelAndView.setViewName("courseDescription.html");
+            Optional<Contact> deletion = contactRepository.findSpecificStudentMessageSpecificSubject("DELETION", person.getEmail());
+            if(deletion.isPresent()) modelAndView.addObject("disabled", true);
+            else modelAndView.addObject("disabled", false);
         } else {
             // Set a default view name if the course doesn't exist for the person
             modelAndView.setViewName("");
+            Optional<Contact> enrollment = contactRepository.findSpecificStudentMessageSpecificSubject("ENROLLMENT", person.getEmail());
+            if(enrollment.isPresent()) modelAndView.addObject("disabled", true);
+            else modelAndView.addObject("disabled", false);
         }
 
 
@@ -72,7 +85,7 @@ public class CourseController {
     @GetMapping("/courses/unregister")
     public String unRegister( @RequestParam("courseId") int courseId, HttpSession session, Model model){
 
-/*        Person person = (Person) session.getAttribute("loggedInPerson");
+        Person person = (Person) session.getAttribute("loggedInPerson");
 
         Contact contact = new Contact();
 
@@ -81,7 +94,7 @@ public class CourseController {
 
         contact.setEmail(person.getEmail());
 
-        contactRepository.save(contact);*/
+        contactRepository.save(contact);
 
 
         return "redirect:../dashboard";

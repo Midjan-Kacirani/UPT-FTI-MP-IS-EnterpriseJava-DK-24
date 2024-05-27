@@ -81,6 +81,8 @@
     </table>
     <p class="alert alert-danger" role="alert" th:if="${!#strings.isEmpty(errorMessage)}"
        th:text="${errorMessage}"></p>
+    <p class="alert alert-success" role="alert" th:if="${!#strings.isEmpty(successMessage)}"
+       th:text="${successMessage}"></p>
 
     <!-- Add course material -->
     <div class="modal fade" id="addCourse" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">

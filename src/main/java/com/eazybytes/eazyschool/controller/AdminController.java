@@ -7,6 +7,7 @@ import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.repository.CoursesRepository;
 import com.eazybytes.eazyschool.repository.EazyClassRepository;
 import com.eazybytes.eazyschool.repository.PersonRepository;
+import com.eazybytes.eazyschool.service.ContactService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Controller
@@ -37,6 +37,9 @@ public class AdminController {
 
     @Autowired
     CoursesRepository coursesRepository;
+
+    @Autowired
+    ContactService contactService;
 
     @RequestMapping("/displayClasses")
     public ModelAndView displayClasses(Model model) {
@@ -193,6 +196,35 @@ public class AdminController {
         session.setAttribute("courses", courses);
         ModelAndView modelAndView = new
                 ModelAndView("redirect:/admin/viewStudents?id=" + courses.getCourseId());
+        return modelAndView;
+    }
+
+    @GetMapping("/approveRequest")
+    public ModelAndView approveRequest(@RequestParam("email") String personEmail,
+                                       @RequestParam("subject") String subject,
+                                       @RequestParam("course_id") String courseIdStr,
+                                       RedirectAttributes redirectAttributes) {
+        int courseId = Integer.parseInt(courseIdStr);
+        Person person = personRepository.readByEmail(personEmail);
+        Optional<Courses> courses = coursesRepository.findById(courseId);
+        switch (subject) {
+            case "ENROLLMENT": {
+                person.getCourses().add(courses.get());
+                courses.get().getPersons().add(person);
+                break;
+            }
+            case "DELETION": {
+                person.getCourses().remove(courses.get());
+                courses.get().getPersons().remove(person);
+                break;
+            }
+        }
+        personRepository.save(person);
+        coursesRepository.save(courses.get());
+        //Fshijme request
+        contactService.deleteContactMessage(subject, personEmail);
+        ModelAndView modelAndView = new ModelAndView("redirect:/contact/displayRequests/page/1?sortField=name&sortDir=desc");
+        redirectAttributes.addFlashAttribute("successMessage", "REQUEST WAS APPROVED!");
         return modelAndView;
     }
 
