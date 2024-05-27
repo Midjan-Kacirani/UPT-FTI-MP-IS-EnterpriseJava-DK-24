@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/api/lecturer",produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
-@CrossOrigin(origins="*")
+@RequestMapping(path = "/api/lecturer")
 public class LecturerRestController {
 
     @Autowired

@@ -1,0 +1,48 @@
+.star-rating {
+    display: inline-flex;
+}
+.star-rating input[type="radio"] {
+    display: none;
+}
+.star-rating label {
+    font-size: 2em;
+    color: #ddd;
+    cursor: pointer;
+}
+.star-rating input[type="radio"]:checked ~ label {
+    color: #ffc107;
+}
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffc107;
+}
+
+.star-rating {
+            display: inline-flex;
+        }
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        .star-rating label {
+            font-size: 2em;
+            color: #ddd;
+            cursor: pointer;
+        }
+        .star-rating input[type="radio"]:checked ~ label {
+            color: #ffc107;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+        }
+        .star-rating-static {
+            display: inline-flex;
+            font-size: 2em;
+            color: #ffc107;
+        }
+        .star-rating-static i {
+            color: #ddd;
+        }
+        .star-rating-static .filled {
+            color: #ffc107;
+        }

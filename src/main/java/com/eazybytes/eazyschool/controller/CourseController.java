@@ -6,6 +6,7 @@ import com.eazybytes.eazyschool.repository.ContactRepository;
 import com.eazybytes.eazyschool.repository.CourseRatingRepository;
 import com.eazybytes.eazyschool.repository.CoursesRepository;
 import com.eazybytes.eazyschool.service.CourseMaterialsService;
+import com.eazybytes.eazyschool.service.CourseRatingService;
 import com.eazybytes.eazyschool.service.PersonService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class CourseController {
     @Autowired
     private CourseRatingRepository courseRatingRepository;
 
+    @Autowired
+    private CourseRatingService courseRatingService;
+
 
     @GetMapping("/courses")
     public ModelAndView getCourses(Model model) {
@@ -49,6 +53,7 @@ public class CourseController {
 
         ModelAndView modelAndView = new ModelAndView("courses");
         modelAndView.addObject("courses", courses);
+        modelAndView.addObject("courseRating", courseRatingService.calculateAverageRatingsForCourses());
 
         return modelAndView;
     }
@@ -87,7 +92,7 @@ public class CourseController {
             CourseRatingId courseRatingId = new CourseRatingId();
             courseRatingId.setCourseId(courseId);
             courseRatingId.setPersonId(person.getPersonId());
-            modelAndView.addObject("courseRating", courseRatingRepository.findById(courseRatingId));
+            modelAndView.addObject("courseRating", courseRatingRepository.findById(courseRatingId).orElse(new CourseRating()));
 
         } else {
             // Set a default view name if the course doesn't exist for the person
@@ -160,7 +165,7 @@ public class CourseController {
                 .body(resource);
     }
 
-    @PostMapping("/courses/setRating")
+    @GetMapping("/courses/setRating")
     public String setRating(@RequestParam("courseId") int courseId, @RequestParam("rating") int rating, HttpSession session) {
         Person person = (Person) session.getAttribute("loggedInPerson");
 
