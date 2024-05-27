@@ -72,7 +72,7 @@ public class CourseController {
             else modelAndView.addObject("disabled", false);
         } else {
             // Set a default view name if the course doesn't exist for the person
-            modelAndView.setViewName("");
+            modelAndView.setViewName("courseDescription_enrollrequest.html");
             Optional<Contact> enrollment = contactRepository.findSpecificStudentMessageSpecificSubject("ENROLLMENT", person.getEmail());
             if(enrollment.isPresent()) modelAndView.addObject("disabled", true);
             else modelAndView.addObject("disabled", false);
@@ -90,6 +90,24 @@ public class CourseController {
         Contact contact = new Contact();
 
         contact.setSubject("DELETION");
+        contact.setMessage("CourseID: "+courseId);
+
+        contact.setEmail(person.getEmail());
+
+        contactRepository.save(contact);
+
+
+        return "redirect:../dashboard";
+    }
+
+    @GetMapping("/courses/register")
+    public String register( @RequestParam("courseId") int courseId, HttpSession session, Model model){
+
+        Person person = (Person) session.getAttribute("loggedInPerson");
+
+        Contact contact = new Contact();
+
+        contact.setSubject("ENROLLMENT");
         contact.setMessage("CourseID: "+courseId);
 
         contact.setEmail(person.getEmail());

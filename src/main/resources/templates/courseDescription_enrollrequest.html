@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Eazy School - Best Educational Institute for your Child</title>
+    <!-- Google fonts -->
+    <link href="//fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Template CSS Style link -->
+    <link rel="stylesheet" href="/assets/css/style-starter.css">
+</head>
+<body>
+<!-- header -->
+<div th:replace="~{header :: header}">...</div>
+<!-- //header -->
+
+<!-- inner banner -->
+<section class="inner-banner py-5">
+    <div class="w3l-breadcrumb py-lg-5">
+        <div class="container pt-4 pb-sm-4">
+            <h4 class="inner-text-title pt-5">Course Details</h4>
+        </div>
+    </div>
+</section>
+<!-- //inner banner -->
+
+<div class="container py-md-5 py-4">
+    <div class="row justify-content-center">
+        <!-- Display information about one course -->
+        <div class="coursecard-single">
+            <form action="/courses/register" method="get">
+                <div class="grids5-info position-relative">
+                <img th:src="@{'../assets/CourseImages/' + ${course.getCourseId()} + '/' + ${course.getCoursePicture()}}" alt="" class="img-fluid" />
+                <div class="meta-list">
+                    <a th:text="${course.getCategory()}">Category</a>
+                </div>
+            </div>
+            <div class="content-main-top">
+                <div class="content-top mb-4 mt-3">
+                    <ul class="list-unstyled d-flex align-items-center justify-content-between">
+                        <li><i class="fas fa-star"></i> <span th:text="${course.getRating()}">0.0</span></li>
+                    </ul>
+                </div>
+                <h4><a th:text="${course.getName()}">Course Name</a></h4>
+                <p th:text="${course.getShortDescription()}">Course Description</p>
+                <p th:text="${course.getLongDescription()}">Fully Detailed Description</p>
+                <input type="hidden" th:name="courseId" th:value="${course.getCourseId()}" />
+                <button type="submit" class="btn btn-success" th:disabled="${disabled == true}">Enroll today!</button>
+            </div>
+
+                </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{footer :: footer}">...</div>
+</body>
+</html>
