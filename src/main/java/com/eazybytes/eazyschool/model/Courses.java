@@ -37,6 +37,10 @@ public class Courses extends BaseEntity{
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CourseMaterials> courseMaterials = new HashSet<>();
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<CourseRating> ratings = new HashSet<>();
+
     @Transient
     public String getPhotosImagePath(){
         if(coursePicture == null || courseId <0)

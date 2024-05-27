@@ -24,6 +24,27 @@
     </div>
 </section>
 <!-- //inner banner -->
+<!-- Display information about one course -->
+<div class="coursecard-single">
+    <!-- Course details -->
+
+    <!-- Rating form -->
+    <form action="/courses/setRating" method="post" th:if="${!hasRated}">
+        <input type="hidden" name="courseId" th:value="${course.getCourseId()}"/>
+        <label for="rating">Rate this course:</label>
+        <select name="rating" id="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <button type="submit">Submit Rating</button>
+    </form>
+    <p th:if="${hasRated}">Thank you for rating this course! Your rating is <span th:text="${courseRating.rating}"></span></p>
+
+</div>
+
 
 <div class="container py-md-5 py-4">
     <div class="row justify-content-center">
@@ -38,11 +59,6 @@
                     </div>
                 </div>
                 <div class="content-main-top">
-                    <div class="content-top mb-4 mt-3">
-                        <ul class="list-unstyled d-flex align-items-center justify-content-between">
-                            <li><i class="fas fa-star"></i> <span th:text="${course.getRating()}">0.0</span></li>
-                        </ul>
-                    </div>
                     <h4><a th:text="${course.getName()}">Course Name</a></h4>
                     <p th:text="${course.getShortDescription()}">Course Description</p>
                     <p th:text="${course.getLongDescription()}">Fully Detailed Description</p>

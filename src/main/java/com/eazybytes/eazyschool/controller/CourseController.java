@@ -1,12 +1,9 @@
 package com.eazybytes.eazyschool.controller;
 
-import com.eazybytes.eazyschool.config.EazySchoolProps;
 import com.eazybytes.eazyschool.constants.EazySchoolConstants;
-import com.eazybytes.eazyschool.model.Contact;
-import com.eazybytes.eazyschool.model.CourseMaterials;
-import com.eazybytes.eazyschool.model.Courses;
-import com.eazybytes.eazyschool.model.Person;
+import com.eazybytes.eazyschool.model.*;
 import com.eazybytes.eazyschool.repository.ContactRepository;
+import com.eazybytes.eazyschool.repository.CourseRatingRepository;
 import com.eazybytes.eazyschool.repository.CoursesRepository;
 import com.eazybytes.eazyschool.service.CourseMaterialsService;
 import com.eazybytes.eazyschool.service.PersonService;
@@ -42,6 +39,8 @@ public class CourseController {
 
     @Autowired
     private CourseMaterialsService courseMaterialsService;
+    @Autowired
+    private CourseRatingRepository courseRatingRepository;
 
 
     @GetMapping("/courses")
@@ -70,6 +69,7 @@ public class CourseController {
 
 
         boolean exists = personService.checkIfCourseExistsForPerson(person.getPersonId(), courseId);
+        boolean hasRated = personService.hasRatedCourse(person.getPersonId(), courseId);
 
         modelAndView.addObject("person", person);
         modelAndView.addObject("course", courses);
@@ -83,6 +83,12 @@ public class CourseController {
             Optional<Contact> deletion = contactRepository.findSpecificStudentMessageSpecificSubject("DELETION", person.getEmail());
             if(deletion.isPresent()) modelAndView.addObject("disabled", true);
             else modelAndView.addObject("disabled", false);
+            modelAndView.addObject("hasRated", hasRated);
+            CourseRatingId courseRatingId = new CourseRatingId();
+            courseRatingId.setCourseId(courseId);
+            courseRatingId.setPersonId(person.getPersonId());
+            modelAndView.addObject("courseRating", courseRatingRepository.findById(courseRatingId));
+
         } else {
             // Set a default view name if the course doesn't exist for the person
             modelAndView.setViewName("courseDescription_enrollrequest.html");
@@ -154,6 +160,28 @@ public class CourseController {
                 .body(resource);
     }
 
+    @PostMapping("/courses/setRating")
+    public String setRating(@RequestParam("courseId") int courseId, @RequestParam("rating") int rating, HttpSession session) {
+        Person person = (Person) session.getAttribute("loggedInPerson");
+
+
+        Optional<Courses> optionalCourse = courseService.findById(courseId);
+        Courses course = optionalCourse.orElse(null);
+
+
+        if (course != null && person != null) {
+            boolean hasRated = personService.hasRatedCourse(person.getPersonId(), courseId);
+            if (!hasRated) {
+                CourseRating courseRating = new CourseRating();
+                courseRating.setCourse(course);
+                courseRating.setPerson(person);
+                courseRating.setRating(rating);
+
+                courseRatingRepository.save(courseRating);
+            }
+        }
+        return "redirect:/courses/check?courseId=" + courseId;
+    }
 
 
 }
