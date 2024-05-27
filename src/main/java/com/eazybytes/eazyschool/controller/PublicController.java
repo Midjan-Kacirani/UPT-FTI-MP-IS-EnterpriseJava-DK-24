@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.controller;
 
+import com.eazybytes.eazyschool.constants.EazySchoolConstants;
 import com.eazybytes.eazyschool.model.Person;
 import com.eazybytes.eazyschool.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ public class PublicController {
         if(errors.hasErrors()){
             return "register.html";
         }
-        boolean isSaved = personService.createNewPerson(person);
+        boolean isSaved = personService.createNewPerson(person, EazySchoolConstants.STUDENT_ROLE);
         if(isSaved){
             return "redirect:/login?register=true";
         }else {

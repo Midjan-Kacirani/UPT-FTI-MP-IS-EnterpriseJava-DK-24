@@ -90,6 +90,10 @@ public class Person extends BaseEntity{
                     @JoinColumn(name = "course_id", referencedColumnName = "courseId")})
     private Set<Courses> courses = new HashSet<>();
 
+    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<CourseRating> ratings = new HashSet<>();
+
+
     @Transient
     public String getPhotosImagePath(){
         if(photoData == null || personId <0)

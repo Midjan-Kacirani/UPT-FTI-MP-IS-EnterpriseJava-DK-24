@@ -51,4 +51,8 @@ public class CourseMaterialsService {
         }
         return courseId;
     }
+
+    public Optional<CourseMaterials> findCourseMaterial(Integer courseId, Integer materialId) {
+        return courseMaterialsRepository.findByCourseId_MaterialId(courseId, materialId);
+    }
 }

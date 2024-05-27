@@ -1,20 +1,26 @@
 package com.eazybytes.eazyschool.controller;
 
-import com.eazybytes.eazyschool.config.EazySchoolProps;
 import com.eazybytes.eazyschool.constants.EazySchoolConstants;
-import com.eazybytes.eazyschool.model.Contact;
-import com.eazybytes.eazyschool.model.Courses;
-import com.eazybytes.eazyschool.model.Person;
+import com.eazybytes.eazyschool.model.*;
 import com.eazybytes.eazyschool.repository.ContactRepository;
+import com.eazybytes.eazyschool.repository.CourseRatingRepository;
 import com.eazybytes.eazyschool.repository.CoursesRepository;
+import com.eazybytes.eazyschool.service.CourseMaterialsService;
 import com.eazybytes.eazyschool.service.PersonService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +36,11 @@ public class CourseController {
 
     @Autowired
     private ContactRepository contactRepository;
+
+    @Autowired
+    private CourseMaterialsService courseMaterialsService;
+    @Autowired
+    private CourseRatingRepository courseRatingRepository;
 
 
     @GetMapping("/courses")
@@ -53,10 +64,12 @@ public class CourseController {
 
         Optional<Courses> optionalCourses = courseService.findById(courseId);
         Courses courses = optionalCourses.orElse(null);
-
+        List<CourseMaterials> courseMaterials = courseMaterialsService.retrieveCourseMaterialsOfCourse(courseId);
+        modelAndView.addObject("courseMaterials", courseMaterials);
 
 
         boolean exists = personService.checkIfCourseExistsForPerson(person.getPersonId(), courseId);
+        boolean hasRated = personService.hasRatedCourse(person.getPersonId(), courseId);
 
         modelAndView.addObject("person", person);
         modelAndView.addObject("course", courses);
@@ -70,9 +83,15 @@ public class CourseController {
             Optional<Contact> deletion = contactRepository.findSpecificStudentMessageSpecificSubject("DELETION", person.getEmail());
             if(deletion.isPresent()) modelAndView.addObject("disabled", true);
             else modelAndView.addObject("disabled", false);
+            modelAndView.addObject("hasRated", hasRated);
+            CourseRatingId courseRatingId = new CourseRatingId();
+            courseRatingId.setCourseId(courseId);
+            courseRatingId.setPersonId(person.getPersonId());
+            modelAndView.addObject("courseRating", courseRatingRepository.findById(courseRatingId));
+
         } else {
             // Set a default view name if the course doesn't exist for the person
-            modelAndView.setViewName("");
+            modelAndView.setViewName("courseDescription_enrollrequest.html");
             Optional<Contact> enrollment = contactRepository.findSpecificStudentMessageSpecificSubject("ENROLLMENT", person.getEmail());
             if(enrollment.isPresent()) modelAndView.addObject("disabled", true);
             else modelAndView.addObject("disabled", false);
@@ -98,6 +117,70 @@ public class CourseController {
 
 
         return "redirect:../dashboard";
+    }
+
+    @GetMapping("/courses/register")
+    public String register( @RequestParam("courseId") int courseId, HttpSession session, Model model){
+
+        Person person = (Person) session.getAttribute("loggedInPerson");
+
+        Contact contact = new Contact();
+
+        contact.setSubject("ENROLLMENT");
+        contact.setMessage("CourseID: "+courseId);
+
+        contact.setEmail(person.getEmail());
+
+        contactRepository.save(contact);
+
+
+        return "redirect:../dashboard";
+    }
+
+    @GetMapping("/courses/downloadClassMaterial")
+    public ResponseEntity<Resource> downloadClassMaterial(@RequestParam("courseId") Integer courseId, @RequestParam("materialId") Integer materialId) {
+        // Logic to fetch file from server
+        CourseMaterials material = courseMaterialsService.findCourseMaterial(courseId, materialId).get();
+        Path filePath = Paths.get("src/main/resources/static/assets/CourseMaterials/" + courseId + "/" + material.getFilePath());
+        Resource resource = new FileSystemResource(filePath.toFile());
+
+        // Check if the file exists
+        if (!resource.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Set content type and disposition for the response
+        String contentType = "application/pdf"; // Change this based on the file type
+        String disposition = "attachment; filename=" + resource.getFilename();
+
+        // Return ResponseEntity with file content
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, disposition)
+                .body(resource);
+    }
+
+    @PostMapping("/courses/setRating")
+    public String setRating(@RequestParam("courseId") int courseId, @RequestParam("rating") int rating, HttpSession session) {
+        Person person = (Person) session.getAttribute("loggedInPerson");
+
+
+        Optional<Courses> optionalCourse = courseService.findById(courseId);
+        Courses course = optionalCourse.orElse(null);
+
+
+        if (course != null && person != null) {
+            boolean hasRated = personService.hasRatedCourse(person.getPersonId(), courseId);
+            if (!hasRated) {
+                CourseRating courseRating = new CourseRating();
+                courseRating.setCourse(course);
+                courseRating.setPerson(person);
+                courseRating.setRating(rating);
+
+                courseRatingRepository.save(courseRating);
+            }
+        }
+        return "redirect:/courses/check?courseId=" + courseId;
     }
 
 
