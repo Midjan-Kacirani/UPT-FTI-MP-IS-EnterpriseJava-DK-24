@@ -67,9 +67,9 @@ public class PersonService {
         PersonDTO personDTO = null;
         if(createNewPerson(person, EazySchoolConstants.LECTURER_ROLE)){
             personDTO = new PersonDTO();
-            personDTO.setName(personDTO.getName());
-            personDTO.setEmail(personDTO.getEmail());
-            personDTO.setMobileNumber(personDTO.getMobileNumber());
+            personDTO.setName(person.getName());
+            personDTO.setEmail(person.getEmail());
+            personDTO.setMobileNumber(person.getMobileNumber());
             personDTO.setRoles(rolesRepository.getByRoleName(EazySchoolConstants.LECTURER_ROLE));
         }
         return personDTO;

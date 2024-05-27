@@ -24,7 +24,14 @@ public class CourseRating {
     @JoinColumn(name = "person_id")
     private Person person;
 
+    @Column
     private int rating;
+
+
+    // Default constructor
+    public CourseRating() {
+        this.id = new CourseRatingId();
+    }
 
 }
 

@@ -1,3 +1,5 @@
+USE eazyschool;
+
 INSERT INTO `holidays` (`day`,`reason`,`type`,`created_at`, `created_by`)
  VALUES (' Jan 1 ','New Year''s Day','FESTIVAL',CURDATE(),'DBA');
 
@@ -37,8 +39,20 @@ INSERT INTO `person` (`name`,`email`,`mobile_number`,`pwd`,`role_id`,`created_at
 INSERT INTO `person` (`name`,`email`,`mobile_number`,`pwd`,`role_id`,`created_at`, `created_by`)
   VALUES ('Lecturer','lecturer@eazyschool.com','3443434343','lecturer', 3 ,CURDATE(),'DBA');
 
+  INSERT INTO `person` (`name`,`email`,`mobile_number`,`pwd`,`role_id`,`created_at`, `created_by`)
+  VALUES ('Lecturer','lecturer_test1@eazyschool.com','3443434343','lecturer', 3 ,CURDATE(),'DBA');
+
 INSERT INTO `person` (`name`,`email`,`mobile_number`,`pwd`,`role_id`,`created_at`, `created_by`)
-  VALUES ('Student','student@eazyschool.com','3443434343','student', 3 ,CURDATE(),'DBA');
+  VALUES ('Lecturer','lecturer_test2@eazyschool.com','3443434343','lecturer', 3 ,CURDATE(),'DBA');
+
+INSERT INTO `person` (`name`,`email`,`mobile_number`,`pwd`,`role_id`,`created_at`, `created_by`)
+  VALUES ('Student','student@eazyschool.com','3443434343','student', 2 ,CURDATE(),'DBA');
+
+INSERT INTO `person` (`name`,`email`,`mobile_number`,`pwd`,`role_id`,`created_at`, `created_by`)
+  VALUES ('Student_test1','Student_test1@eazyschool.com','3443434343','student', 2 ,CURDATE(),'DBA');
+
+  INSERT INTO `person` (`name`,`email`,`mobile_number`,`pwd`,`role_id`,`created_at`, `created_by`)
+  VALUES ('Student_test2','Student_test2@eazyschool.com','3443434343','student', 2 ,CURDATE(),'DBA');
 
 INSERT INTO `contact_msg` (`name`,`mobile_num`,`email`,`subject`,`message`,`status`,`created_at`, `created_by`)
   VALUES ('Adam','2176436587','zadam@gmail.com','Regarding a job','Wanted to join as teacher','Open',CURDATE(),'DBA');
@@ -93,4 +107,3 @@ INSERT INTO `contact_msg` (`name`,`mobile_num`,`email`,`subject`,`message`,`stat
 
 INSERT INTO `contact_msg` (`name`,`mobile_num`,`email`,`subject`,`message`,`status`,`created_at`, `created_by`)
   VALUES ('Dominik Tanner','4556127834','tannerdominik@gmail.com','Games schedule','Provide Summer games schedule','Open',CURDATE(),'DBA');
-
